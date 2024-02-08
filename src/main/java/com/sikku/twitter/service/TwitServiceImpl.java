@@ -1,5 +1,6 @@
 package com.sikku.twitter.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -60,17 +61,34 @@ public class TwitServiceImpl implements ITwitService {
 
 	@Override
 	public Twit createReply(TwitReplyRequest req, User user) {
-		return null;
+
+		Twit replyFor = twitRepo.findById(req.getTwitId())
+				.orElseThrow(() -> new TwitNotFoundException("twit not found with id " + req.getTwitId()));
+
+		Twit twit = new Twit();
+		twit.setContent(req.getContent());
+		twit.setCreatedAt(LocalDateTime.now());
+		twit.setImage(req.getImage());
+		twit.setUser(user);
+		twit.setReply(true);
+		twit.setReplyFor(replyFor);
+
+		Twit savedReply = twitRepo.save(twit);
+
+		twit.getReplyTwits().add(savedReply);
+		twitRepo.save(replyFor);
+
+		return replyFor;
 	}
 
 	@Override
 	public List<Twit> getUserTwit(User user) {
-		return null;
+		return twitRepo.findByRetwitUserContainsOrUser_idAndIsTwitTrueOrderByCreatedAtDesc(user, user.getId());
 	}
 
 	@Override
 	public List<Twit> findByLikesContainsUser(User user) {
-		return null;
+		return twitRepo.findByLikesUser_Id(user.getId());
 	}
 
 	@Override

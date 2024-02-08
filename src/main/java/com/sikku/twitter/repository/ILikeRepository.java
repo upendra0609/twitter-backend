@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.sikku.twitter.model.Like;
 
@@ -14,6 +15,7 @@ public interface ILikeRepository extends JpaRepository<Like, Long> {
 	
 	Optional<Like> findByUserIdAndTwitId(Long userId, Long twitId);
 	
-	List<Like> findByTwitId();
+	@Query("SELECT l FROM Like l WHERE l.twit.id=:twitId")
+	List<Like> findByTwitId(Long twitId);
 
 }

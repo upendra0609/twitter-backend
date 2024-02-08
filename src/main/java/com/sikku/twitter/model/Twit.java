@@ -28,7 +28,7 @@ public class Twit {
 	private User user;
 	private String content;
 	@OneToMany(mappedBy = "twit",cascade = CascadeType.ALL)
-	private List<Like> like = new ArrayList<>();
+	private List<Like> likes = new ArrayList<>();
 	@OneToMany
 	private List<Twit> replyTwits = new ArrayList<>();
 	@ManyToMany
